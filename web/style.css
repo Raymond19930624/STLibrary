@@ -14,6 +14,8 @@ body { margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Can
 .card:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,0,0,.45) }
 .thumb { width: 100%; aspect-ratio: 3/4; background: #0c1020; overflow: hidden; border-bottom: 1px solid var(--border); position: relative }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block }
+.thumb.fallback { background: radial-gradient(180px 120px at 50% 40%, #1e2444 0%, #0c1020 60%, #0a0d1a 100%); }
+.thumb.fallback::after { content:""; position:absolute; inset:0; background-image:url('logo.svg'); background-repeat:no-repeat; background-position:center; background-size: 30%; opacity: .25 }
 .title { padding: 12px 14px; font-weight: 700; font-size: 16px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical }
 .tags { display: none }
 .tag { background: linear-gradient(135deg, #101531, #1c2244); color: #c7ccdd; padding: 5px 10px; border-radius: 999px; font-size: 12px; border: 1px solid var(--border) }

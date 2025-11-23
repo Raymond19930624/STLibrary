@@ -31,9 +31,10 @@ function render(models) {
 
     const thumb = document.createElement("div");
     thumb.className = "thumb";
-    const img = document.createElement("img");
-    img.src = `images/${m.id}.jpg`;
-    img.alt = m.name;
+  const img = document.createElement("img");
+  img.src = `images/${m.id}.jpg`;
+  img.alt = m.name;
+  img.onerror = () => { thumb.classList.add("fallback"); img.style.display = "none"; };
     img.addEventListener("click", () => {
       const lb = document.getElementById("lightbox");
       const lbImg = document.getElementById("lightbox-img");
