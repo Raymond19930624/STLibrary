@@ -191,26 +191,18 @@ async function run() {
       models.push(entry);
     } else {
       const oldId = exists.id;
-      const newId = slugify(parsed.name) || oldId;
-      exists.name = parsed.name || exists.name;
-      exists.tags = parsed.tags && parsed.tags.length ? parsed.tags : exists.tags;
+      const newId = oldId;
+
+      if (!exists.name && parsed.name) {
+        exists.name = parsed.name;
+      }
+      if (Array.isArray(parsed.tags) && parsed.tags.length) {
+        const merged = Array.from(new Set([...(exists.tags || []), ...parsed.tags]));
+        exists.tags = merged;
+      }
       exists.file_id_image = bestPhoto.file_id;
       exists.doc_message_id = exists.doc_message_id || baseDoc.message_id;
       exists.photo_message_id = pm.message_id;
-
-      if (newId !== oldId) {
-        try {
-          const oldImg = path.join(imagesDir, `${oldId}.jpg`);
-          const newImg = path.join(imagesDir, `${newId}.jpg`);
-          if (fs.existsSync(oldImg)) fs.renameSync(oldImg, newImg);
-        } catch (e) {}
-        try {
-          const oldDir = path.join(filesDir, oldId);
-          const newDir = path.join(filesDir, `${newId}`);
-          if (fs.existsSync(oldDir)) fs.renameSync(oldDir, newDir);
-        } catch (e) {}
-        exists.id = newId;
-      }
 
       const existingDirect = exists.directUrl || "";
       const currentFileName = existingDirect ? path.basename(existingDirect) : fileName;
@@ -218,7 +210,7 @@ async function run() {
       exists.doc_message_id = baseDoc.message_id;
       exists.photo_message_id = pm.message_id;
       exists.downloadUrl = downloadUrl;
-      exists.directUrl = `files/${exists.id}/${currentFileName}`;
+      exists.directUrl = `files/${newId}/${currentFileName}`;
 
       for (let i = models.length - 1; i >= 0; i--) {
         if (models[i] !== exists && (models[i].file_id_doc === exists.file_id_doc || models[i].doc_message_id === exists.doc_message_id)) {
