@@ -20,7 +20,10 @@ const filesDir = path.join(webDir, "files");
   const tagsStr = arg("tags") || "";
   if(!id || !name) return;
 
-  const models = readJson(modelsPath, []);
+  let models = readJson(modelsPath, []);
+  if (!Array.isArray(models) || models.length === 0) {
+    models = readJson(webModelsPath, []);
+  }
   const m = models.find((x)=>x.id===id);
   if(!m) return;
 
