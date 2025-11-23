@@ -6,6 +6,7 @@ async function loadModels(){
   }catch{ return []; }
 }
 const pending={ deletes:new Set(), edits:new Map() };
+let selectMode=false;
 function getToken(){ return localStorage.getItem('admin.token') || document.getElementById('token').value.trim(); }
 function getRepo(){ return localStorage.getItem('admin.repo') || document.getElementById('repo').value.trim(); }
 function persistConfig(){
@@ -23,23 +24,21 @@ function initConfig(){
   if(hasT && hasR && cfg) cfg.classList.add('hidden');
   const syncFixed=document.getElementById('sync-btn-fixed');
   if(syncFixed){ syncFixed.addEventListener('click', dispatchSync); }
-  const actionsBar=document.querySelector('.actions');
-  if(actionsBar){
-    const applyBtn=document.createElement('button');
-    applyBtn.id='apply-btn-fixed';
-    applyBtn.className='btn';
-    applyBtn.textContent='送出變更';
-    applyBtn.style.marginLeft='10px';
-    actionsBar.appendChild(applyBtn);
-    applyBtn.addEventListener('click', dispatchApply);
-  }
+  const dm=document.getElementById('delete-mode-btn');
+  const dc=document.getElementById('delete-confirm-btn');
+  const dx=document.getElementById('delete-cancel-btn');
+  const ap=document.getElementById('apply-btn-fixed');
+  if(dm) dm.addEventListener('click', enterDeleteMode);
+  if(dc) dc.addEventListener('click', confirmDelete);
+  if(dx) dx.addEventListener('click', exitDeleteMode);
+  if(ap) ap.addEventListener('click', dispatchApply);
 }
 function render(list){
   const root=document.getElementById('admin-cards');
   root.innerHTML='';
   for(const m of list){
     const card=document.createElement('div');
-    card.className='card';
+    card.className='card'+(selectMode?' select-mode':'');
     const thumb=document.createElement('div');
     thumb.className='thumb';
     const img=document.createElement('img');
@@ -59,26 +58,21 @@ function render(list){
     }
     const actions=document.createElement('div');
     actions.className='actions';
-    const checkbox=document.createElement('input');
-    checkbox.type='checkbox';
-    checkbox.title='勾選批次刪除';
-    checkbox.checked=pending.deletes.has(m.id);
-    checkbox.addEventListener('change',()=>{
-      if(checkbox.checked){ pending.deletes.add(m.id); card.classList.add('selected'); }
-      else { pending.deletes.delete(m.id); card.classList.remove('selected'); }
-    });
     const editBtn=document.createElement('button');
     editBtn.className='btn btn-secondary';
     editBtn.textContent='編輯';
     editBtn.addEventListener('click',()=>openEdit(m));
-    const delBtn=document.createElement('button');
-    delBtn.className='btn btn-danger';
-    delBtn.textContent='加入刪除';
-    delBtn.addEventListener('click',()=>{ checkbox.checked=true; checkbox.dispatchEvent(new Event('change')); });
-    actions.appendChild(checkbox);
     actions.appendChild(editBtn);
-    actions.appendChild(delBtn);
     card.appendChild(thumb); card.appendChild(title); card.appendChild(tags); card.appendChild(actions);
+    if(selectMode){
+      if(pending.deletes.has(m.id)) card.classList.add('selected');
+      card.addEventListener('click',(e)=>{
+        if(actions.contains(e.target)) return;
+        const sel=pending.deletes.has(m.id);
+        if(sel){ pending.deletes.delete(m.id); card.classList.remove('selected'); }
+        else { pending.deletes.add(m.id); card.classList.add('selected'); }
+      });
+    }
     root.appendChild(card);
   }
 }
@@ -144,6 +138,29 @@ async function dispatchSync(){
     const res=await fetch(url,{method:'POST',headers:{'Authorization':'Bearer '+pat,'Accept':'application/vnd.github+json','Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'},body:JSON.stringify(body)});
     if(res.ok){ alert('已觸發同步'); }
     else { const txt=await res.text(); alert('觸發失敗：'+res.status+'\n'+txt); }
+  }catch(e){ alert('網路錯誤：'+e); }
+}
+function enterDeleteMode(){ selectMode=true; pending.deletes.clear(); toggleDeleteUI(true); loadModels().then(render); }
+function exitDeleteMode(){ selectMode=false; pending.deletes.clear(); toggleDeleteUI(false); loadModels().then(render); }
+function toggleDeleteUI(on){
+  const dm=document.getElementById('delete-mode-btn');
+  const dc=document.getElementById('delete-confirm-btn');
+  const dx=document.getElementById('delete-cancel-btn');
+  if(on){ dm && dm.classList.add('hidden'); dc && dc.classList.remove('hidden'); dx && dx.classList.remove('hidden'); }
+  else { dm && dm.classList.remove('hidden'); dc && dc.classList.add('hidden'); dx && dx.classList.add('hidden'); }
+}
+async function confirmDelete(){
+  persistConfig();
+  const pat=getToken();
+  const repo=getRepo();
+  if(!pat||!repo){ alert('請先輸入 GitHub PAT 與 owner/repo'); return; }
+  const url=`https://api.github.com/repos/${repo}/actions/workflows/admin-apply.yml/dispatches`;
+  const ops={deletes:Array.from(pending.deletes),edits:[]};
+  const body={ref:'main',inputs:{ops:JSON.stringify(ops)}};
+  try{
+    const res=await fetch(url,{method:'POST',headers:{'Authorization':'Bearer '+pat,'Accept':'application/vnd.github+json','Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'},body:JSON.stringify(body)});
+    if(res.ok){ exitDeleteMode(); alert('已送出批次刪除與同步'); }
+    else { const txt=await res.text(); alert('送出失敗：'+res.status+'\n'+txt); }
   }catch(e){ alert('網路錯誤：'+e); }
 }
 async function dispatchApply(){
