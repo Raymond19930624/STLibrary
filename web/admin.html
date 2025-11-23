@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>管理後台</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>管理後台</h1>
+    <div class="search">
+      <input id="token" type="password" placeholder="GitHub PAT（scope: workflow, repo）">
+    </div>
+    <div class="search">
+      <input id="repo" type="text" value="Raymond19930624/3DPBase" placeholder="owner/repo">
+    </div>
+    <div id="admin-cards" class="grid"></div>
+  </div>
+  <div id="admin-lock" class="lock">
+    <div class="card" style="width:420px; max-width:90vw;">
+      <div class="title">輸入管理密碼</div>
+      <div class="search"><input id="admin-pass" type="password" placeholder="請輸入密碼"></div>
+      <div class="actions"><button id="admin-login" class="btn">登入</button></div>
+    </div>
+  </div>
+  <script src="admin.js"></script>
+</body>
+</html>

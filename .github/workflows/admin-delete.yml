@@ -1,12 +1,19 @@
-name: Telegram Sync
+name: Admin Delete
 on:
-  schedule:
-    - cron: "* * * * *"
   workflow_dispatch:
+    inputs:
+      id:
+        description: id
+        required: false
+        type: string
+      name:
+        description: name
+        required: false
+        type: string
 permissions:
   contents: write
 jobs:
-  sync:
+  run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,22 +22,16 @@ jobs:
           node-version: 18
       - run: npm ci || npm install
         working-directory: bot
-      - name: Run bot (30s interval for 2 minutes)
+      - name: Execute delete
         run: |
-          node bot.js
+          node delete.js --id "${{ github.event.inputs.id }}" --name "${{ github.event.inputs.name }}"
         working-directory: bot
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
-          RUN_CONTINUOUS: "true"
-          POLL_INTERVAL_MS: "30000"
-          EXIT_AFTER_MS: "120000"
-      - name: Show git status
-        run: |
-          git status --porcelain
       - name: Commit changes
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add -A
-          if git diff --cached --quiet; then echo "No changes"; else git commit -m "Auto sync models"; git push; fi
+          if git diff --cached --quiet; then echo "No changes"; else git commit -m "Admin delete"; git push; fi

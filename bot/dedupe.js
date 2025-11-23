@@ -13,12 +13,23 @@ const filesDir = path.join(webDir, "files");
 
 function max(a, b) { return (a || 0) > (b || 0) ? a : b; }
 
+function msgIdFromUrl(u) {
+  if (!u) return null;
+  try {
+    const parts = String(u).split("/");
+    const last = parts[parts.length - 1];
+    const n = parseInt(last, 10);
+    return Number.isFinite(n) ? n : null;
+  } catch { return null; }
+}
+
 function dedupe(models) {
   const byDocMsg = new Map();
   for (const m of models) {
-    const key = m.doc_message_id || `__no_doc__:${m.file_id_doc || m.id}`;
+    const mid = m.doc_message_id || msgIdFromUrl(m.downloadUrl);
+    const key = mid || `__no_doc__:${m.file_id_doc || m.id}`;
     const prev = byDocMsg.get(key);
-    if (!prev || (max(m.photo_message_id, m.doc_message_id) >= max(prev.photo_message_id, prev.doc_message_id))) {
+    if (!prev || (max(m.photo_message_id, mid) >= max(prev.photo_message_id, prev.doc_message_id || msgIdFromUrl(prev.downloadUrl)))) {
       byDocMsg.set(key, m);
     }
   }
