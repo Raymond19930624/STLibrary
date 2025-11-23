@@ -29,7 +29,7 @@ const filesDir = path.join(webDir, "files");
 
   const newName = name.trim();
   const newTags = tagsStr.split(/[,，]/).map(s=>s.trim()).filter(Boolean);
-  const newId = slugify(newName) || id;
+  const newId = id;
 
   const oldImg = path.join(imagesDir, `${m.id}.jpg`);
   const newImg = path.join(imagesDir, `${newId}.jpg`);
