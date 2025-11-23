@@ -236,7 +236,9 @@ async function run() {
   }
 
   writeJson(modelsPath, models);
-  writeJson(webModelsPath, models);
+  if (!(process.env.NO_WRITE_WEB_MODELS === "true")) {
+    writeJson(webModelsPath, models);
+  }
 
   const newConfig = { ...config, LAST_UPDATE_ID: nextOffset };
   writeJson(configPath, newConfig);

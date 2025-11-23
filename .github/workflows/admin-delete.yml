@@ -34,4 +34,5 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add -A
+          git restore --staged web/models.json bot/models.json || true
           if git diff --cached --quiet; then echo "No changes"; else git commit -m "Admin delete"; git push; fi

@@ -1,10 +1,12 @@
 name: Telegram Sync
 on:
   schedule:
-    - cron: "* * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 permissions:
   contents: write
+  pages: write
+  id-token: write
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -15,7 +17,7 @@ jobs:
           node-version: 18
       - run: npm ci || npm install
         working-directory: bot
-      - name: Run bot (30s interval for 2 minutes)
+      - name: Run bot (poll 30s for 2 minutes)
         run: |
           node bot.js
         working-directory: bot
@@ -25,12 +27,11 @@ jobs:
           RUN_CONTINUOUS: "true"
           POLL_INTERVAL_MS: "30000"
           EXIT_AFTER_MS: "120000"
-      - name: Show git status
-        run: |
-          git status --porcelain
-      - name: Commit changes
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add -A
-          if git diff --cached --quiet; then echo "No changes"; else git commit -m "Auto sync models"; git push; fi
+          NO_WRITE_WEB_MODELS: "true"
+      - name: Deploy web without commit (Pages artifact)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+      - name: Publish to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

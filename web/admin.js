@@ -17,6 +17,8 @@ function initConfig(){
   const hasT=!!localStorage.getItem('admin.token');
   const hasR=!!localStorage.getItem('admin.repo');
   if(hasT && hasR && cfg) cfg.classList.add('hidden');
+  const syncBtn=document.getElementById('sync-btn');
+  if(syncBtn){ syncBtn.addEventListener('click', dispatchSync); }
 }
 function render(list){
   const root=document.getElementById('admin-cards');
@@ -116,6 +118,20 @@ async function dispatchEdit(id,name,tags,modal){
     const res=await fetch(url,{method:'POST',headers:{'Authorization':'Bearer '+pat,'Accept':'application/vnd.github+json','Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'},body:JSON.stringify(body)});
     if(res.ok){ if(modal) document.body.removeChild(modal); alert('已送出編輯請求'); }
     else { const txt=await res.text(); alert('編輯請求失敗：'+res.status+'\n'+txt); }
+  }catch(e){ alert('網路錯誤：'+e); }
+}
+
+async function dispatchSync(){
+  persistConfig();
+  const pat=getToken();
+  const repo=getRepo();
+  if(!pat||!repo){ alert('請先輸入 GitHub PAT 與 owner/repo'); return; }
+  const url=`https://api.github.com/repos/${repo}/actions/workflows/telegram-sync.yml/dispatches`;
+  const body={ref:'main'};
+  try{
+    const res=await fetch(url,{method:'POST',headers:{'Authorization':'Bearer '+pat,'Accept':'application/vnd.github+json','Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'},body:JSON.stringify(body)});
+    if(res.ok){ alert('已觸發同步'); }
+    else { const txt=await res.text(); alert('觸發失敗：'+res.status+'\n'+txt); }
   }catch(e){ alert('網路錯誤：'+e); }
 }
 function setupLogin(){
