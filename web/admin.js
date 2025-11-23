@@ -153,6 +153,7 @@ async function confirmDelete(){
   persistConfig();
   const pat=getToken();
   const repo=getRepo();
+  if(pending.deletes.size===0){ alert('尚未選取任何模型'); return; }
   if(!pat||!repo){ alert('請先輸入 GitHub PAT 與 owner/repo'); return; }
   const url=`https://api.github.com/repos/${repo}/actions/workflows/admin-apply.yml/dispatches`;
   const ops={deletes:Array.from(pending.deletes),edits:[]};
