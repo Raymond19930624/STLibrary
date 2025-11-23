@@ -29,7 +29,7 @@ function initConfig(){
   const dx=document.getElementById('delete-cancel-btn');
   const ap=document.getElementById('apply-btn-fixed');
   if(dm) dm.addEventListener('click', enterDeleteMode);
-  if(dc) dc.addEventListener('click', confirmDelete);
+  if(dc) dc.addEventListener('click', ()=>{ if(!dc.disabled) confirmDelete(); });
   if(dx) dx.addEventListener('click', exitDeleteMode);
   if(ap) ap.addEventListener('click', dispatchApply);
   updateActionButtons();

@@ -37,9 +37,9 @@ body { margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Can
 .overlay .tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center }
 .card.select-mode { cursor: pointer }
 .card.selected { border-color: #ff2e52; box-shadow: 0 0 0 2px rgba(255,46,82,.5), 0 12px 28px rgba(255,46,82,.25); transform: translateY(-1px) }
-.card.selected { filter: brightness(0.92) saturate(0.95); }
+.card.selected { filter: brightness(0.82) saturate(0.92); transition: filter .2s ease; }
 .card.selected .thumb::after { content: "✓"; position: absolute; top:8px; right:8px; background: #ff2e52; color:#fff; font-weight:800; border-radius: 999px; width:26px; height:26px; display:flex; align-items:center; justify-content:center; box-shadow: 0 6px 14px rgba(255,46,82,.35) }
 .thumb img { position: relative; z-index: 0 }
-.card.selected .thumb::before { content:""; position:absolute; inset:0; background: rgba(10,12,24,.35); z-index: 1 }
+.card.selected .thumb::before { content:""; position:absolute; inset:0; background: rgba(5,8,18,.65); z-index: 1; pointer-events: none }
 .card.selected .thumb::after { z-index: 2 }
 .card.selected .thumb img { filter: grayscale(30%) brightness(0.75) contrast(0.9); transition: filter .2s ease }
