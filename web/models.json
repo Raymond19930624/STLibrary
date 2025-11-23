@@ -1,8 +1,9 @@
 [
   {
-    "id": "40",
-    "name": "小熊派點擊",
+    "id": "1",
+    "name": "小熊派點擊1",
     "tags": [
+      "1",
       "熊",
       "小熊",
       "派",
@@ -14,7 +15,7 @@
     "doc_message_id": 40,
     "photo_message_id": 43,
     "downloadUrl": "https://t.me/c/3219365228/40",
-    "directUrl": "files/40/小熊派點擊.zip"
+    "directUrl": "files/1/小熊派點擊.zip"
   },
   {
     "id": "41",
