@@ -9,7 +9,6 @@ function writeJson(p, obj) { fs.writeFileSync(p, JSON.stringify(obj, null, 2)); 
 
 const root = __dirname;
 const config = readJson(path.join(root, "config.json"), {});
-const modelsPath = path.join(root, "models.json");
 const webDir = path.resolve(root, "..", "web");
 const webModelsPath = path.join(webDir, "models.json");
 const imagesDir = path.join(webDir, "images");
@@ -47,10 +46,7 @@ async function main() {
   const name = arg("name");
   if (!id && !name) return;
 
-  let models = readJson(modelsPath, []);
-  if (!Array.isArray(models) || models.length === 0) {
-    models = readJson(webModelsPath, []);
-  }
+  let models = readJson(webModelsPath, []);
   let idx = -1;
   for (let i = 0; i < models.length; i++) {
     const m = models[i];
@@ -65,7 +61,6 @@ async function main() {
   try { if (fs.existsSync(filesDir)) fs.rmSync(filesDir, { recursive: true, force: true }); } catch {}
 
   models.splice(idx, 1);
-  writeJson(modelsPath, models);
   writeJson(webModelsPath, models);
 
   const docMsg = item.doc_message_id || msgIdFromUrl(item.downloadUrl);

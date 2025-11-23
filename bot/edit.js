@@ -8,7 +8,6 @@ function slugify(name) { return String(name||"").toLowerCase().replace(/\.[a-z0-
 function arg(key){ const i=process.argv.indexOf(`--${key}`); if(i!==-1 && i+1<process.argv.length) return process.argv[i+1]; return null; }
 
 const root = __dirname;
-const modelsPath = path.join(root, "models.json");
 const webDir = path.resolve(root, "..", "web");
 const webModelsPath = path.join(webDir, "models.json");
 const imagesDir = path.join(webDir, "images");
@@ -20,10 +19,7 @@ const filesDir = path.join(webDir, "files");
   const tagsStr = arg("tags") || "";
   if(!id || !name) return;
 
-  let models = readJson(modelsPath, []);
-  if (!Array.isArray(models) || models.length === 0) {
-    models = readJson(webModelsPath, []);
-  }
+  let models = readJson(webModelsPath, []);
   const m = models.find((x)=>x.id===id);
   if(!m) return;
 
@@ -47,6 +43,5 @@ const filesDir = path.join(webDir, "files");
     m.directUrl = `files/${newId}/${fname}`;
   }
 
-  writeJson(modelsPath, models);
   writeJson(webModelsPath, models);
 })();

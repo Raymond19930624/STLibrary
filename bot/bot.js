@@ -3,7 +3,6 @@ const path = require("path");
 const axios = require("axios");
 
 const configPath = path.join(__dirname, "config.json");
-const modelsPath = path.join(__dirname, "models.json");
 const webDir = path.resolve(__dirname, "..", "web");
 const webModelsPath = path.join(webDir, "models.json");
 const imagesDir = path.join(webDir, "images");
@@ -140,10 +139,7 @@ async function run() {
     if (m.photo && m.reply_to_message) photoList.push(m);
   }
 
-  let models = readJson(modelsPath, []);
-  if (!Array.isArray(models) || models.length === 0) {
-    models = readJson(webModelsPath, []);
-  }
+  let models = readJson(webModelsPath, []);
   for (const pm of photoList) {
     const replied = pm.reply_to_message;
     const baseDoc = docMap.get(replied.message_id) || replied;
@@ -233,7 +229,6 @@ async function run() {
     } catch (e) {}
   }
 
-  writeJson(modelsPath, models);
   if (!(process.env.NO_WRITE_WEB_MODELS === "true")) {
     writeJson(webModelsPath, models);
   }

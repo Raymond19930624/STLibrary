@@ -5,7 +5,6 @@ function readJson(p, def) { try { return JSON.parse(fs.readFileSync(p, "utf-8"))
 function writeJson(p, obj) { fs.writeFileSync(p, JSON.stringify(obj, null, 2)); }
 
 const root = __dirname;
-const modelsPath = path.join(root, "models.json");
 const webDir = path.resolve(root, "..", "web");
 const webModelsPath = path.join(webDir, "models.json");
 const imagesDir = path.join(webDir, "images");
@@ -62,10 +61,9 @@ function setDiff(a, b, proj) {
 }
 
 (function main(){
-  const models = readJson(modelsPath, []);
+  const models = readJson(webModelsPath, []);
   const cleaned = dedupe(models);
   const removed = setDiff(models, cleaned, (x) => `${x.id}|${x.file_id_doc||""}|${x.doc_message_id||""}`);
-  writeJson(modelsPath, cleaned);
   writeJson(webModelsPath, cleaned);
 
   for (const r of removed) {

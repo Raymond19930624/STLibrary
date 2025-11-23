@@ -10,7 +10,7 @@ const token = config.BOT_TOKEN;
 const webDir = path.resolve(root, "..", "web");
 const imagesDir = path.join(webDir, "images");
 const filesDir = path.join(webDir, "files");
-const modelsPath = path.join(root, "models.json");
+const webModelsPath = path.join(webDir, "models.json");
 
 async function getFileUrl(fileId) {
   const apiBase = `https://api.telegram.org/bot${token}`;
@@ -27,7 +27,7 @@ async function fetchTo(fileId, dest) {
 
 (async function main(){
   if (!token) return;
-  const models = readJson(modelsPath, []);
+  const models = readJson(webModelsPath, []);
   fs.mkdirSync(webDir, { recursive: true });
   fs.mkdirSync(imagesDir, { recursive: true });
   fs.mkdirSync(filesDir, { recursive: true });
