@@ -111,14 +111,15 @@ async function downloadDocument(apiBase, token, fileId, destPath) {
   return destPath;
 }
 
+const pollIntervalMs = Number(process.env.POLL_INTERVAL_MS || 3000);
+const exitAfterMs = Number(process.env.EXIT_AFTER_MS || 0);
+
 async function run() {
   const config = readJson(configPath, {});
   const token = process.env.BOT_TOKEN || config.BOT_TOKEN;
   const channelId = process.env.CHANNEL_ID ? Number(process.env.CHANNEL_ID) : config.CHANNEL_ID;
   const offset = config.LAST_UPDATE_ID || 0;
   const runContinuous = (process.env.RUN_CONTINUOUS ? process.env.RUN_CONTINUOUS === "true" : !!config.RUN_CONTINUOUS);
-  const pollIntervalMs = Number(process.env.POLL_INTERVAL_MS || config.POLL_INTERVAL_MS || 3000);
-  const exitAfterMs = Number(process.env.EXIT_AFTER_MS || config.EXIT_AFTER_MS || 0);
   const apiBase = `https://api.telegram.org/bot${token}`;
 
   if (!token || !channelId) return;

@@ -25,9 +25,9 @@ jobs:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
           RUN_CONTINUOUS: "true"
-          POLL_INTERVAL_MS: "30000"
-          EXIT_AFTER_MS: "120000"
-          NO_WRITE_WEB_MODELS: "true"
+          POLL_INTERVAL_MS: "15000"
+          EXIT_AFTER_MS: "180000"
+          NO_WRITE_WEB_MODELS: "false"
       - name: Deploy web without commit (Pages artifact)
         uses: actions/upload-pages-artifact@v3
         with:
