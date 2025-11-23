@@ -32,6 +32,7 @@ function initConfig(){
   if(dc) dc.addEventListener('click', confirmDelete);
   if(dx) dx.addEventListener('click', exitDeleteMode);
   if(ap) ap.addEventListener('click', dispatchApply);
+  updateActionButtons();
 }
 function render(list){
   const root=document.getElementById('admin-cards');
@@ -71,6 +72,7 @@ function render(list){
         const sel=pending.deletes.has(m.id);
         if(sel){ pending.deletes.delete(m.id); card.classList.remove('selected'); }
         else { pending.deletes.add(m.id); card.classList.add('selected'); }
+        updateActionButtons();
       });
     }
     root.appendChild(card);
@@ -125,6 +127,7 @@ async function dispatchEdit(id,name,tags,modal){
   pending.edits.set(id,{id,name,tags});
   if(modal) document.body.removeChild(modal);
   alert('已加入編輯變更，請點「送出變更」統一同步');
+  updateActionButtons();
 }
 function confirmAndDelete(m){ pending.deletes.add(m.id); alert('已加入刪除清單'); }
 async function dispatchSync(){
@@ -148,6 +151,7 @@ function toggleDeleteUI(on){
   const dx=document.getElementById('delete-cancel-btn');
   if(on){ dm && dm.classList.add('hidden'); dc && dc.classList.remove('hidden'); dx && dx.classList.remove('hidden'); }
   else { dm && dm.classList.remove('hidden'); dc && dc.classList.add('hidden'); dx && dx.classList.add('hidden'); }
+  updateActionButtons();
 }
 async function confirmDelete(){
   persistConfig();
@@ -177,6 +181,14 @@ async function dispatchApply(){
     if(res.ok){ pending.deletes.clear(); pending.edits.clear(); alert('已送出統一變更與同步'); }
     else { const txt=await res.text(); alert('送出失敗：'+res.status+'\n'+txt); }
   }catch(e){ alert('網路錯誤：'+e); }
+  updateActionButtons();
+}
+
+function updateActionButtons(){
+  const ap=document.getElementById('apply-btn-fixed');
+  const dc=document.getElementById('delete-confirm-btn');
+  if(ap) ap.disabled = pending.edits.size===0;
+  if(dc) dc.disabled = pending.deletes.size===0;
 }
 function setupLogin(){
   const lock=document.getElementById('admin-lock');
