@@ -45,6 +45,8 @@ function render(models) {
     title.className = "title";
     title.textContent = m.name;
 
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
     const tags = document.createElement("div");
     tags.className = "tags";
     for (const t of m.tags || []) {
@@ -53,6 +55,7 @@ function render(models) {
       span.textContent = t;
       tags.appendChild(span);
     }
+    overlay.appendChild(tags);
 
     const actions = document.createElement("div");
     actions.className = "actions";
@@ -66,7 +69,7 @@ function render(models) {
 
     card.appendChild(thumb);
     card.appendChild(title);
-    card.appendChild(tags);
+    card.appendChild(overlay);
     card.appendChild(actions);
     root.appendChild(card);
   }
