@@ -8,8 +8,15 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>管理後台</h1>
+  <div id="admin-body" class="container hidden">
+    <div class="header">
+      <a class="brand" href="index.html" aria-label="回首頁">
+        <img src="logo.svg" alt="3DPBASE LIBRARY">
+        <span>3DPBASE LIBRARY</span>
+      </a>
+    </div>
+    
+    <h1 style="display:none">管理後台</h1>
     <div class="search">
       <input id="token" type="password" placeholder="GitHub PAT（scope: workflow, repo）">
     </div>

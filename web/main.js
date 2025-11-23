@@ -67,9 +67,9 @@ function render(models) {
     a.textContent = "下載";
     actions.appendChild(a);
 
+    thumb.appendChild(overlay);
     card.appendChild(thumb);
     card.appendChild(title);
-    card.appendChild(overlay);
     card.appendChild(actions);
     root.appendChild(card);
   }

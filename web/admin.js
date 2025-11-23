@@ -51,7 +51,9 @@ function setupLogin(){
   const btn=document.getElementById('admin-login');
   btn.addEventListener('click',()=>{
     const ok=input.value.trim()==='06248255';
-    if(ok){ lock.style.display='none'; loadModels().then(render); }
+    const body=document.getElementById('admin-body');
+    if(ok){ lock.style.display='none'; body.classList.remove('hidden'); loadModels().then(render); } else { input.value=''; }
   });
+  input.addEventListener('keydown',(e)=>{ if(e.key==='Enter') btn.click(); });
 }
 setupLogin();

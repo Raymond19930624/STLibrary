@@ -1,7 +1,7 @@
 :root { --bg:#0f1220; --fg:#e8eaf6; --muted:#aab0c0; --accent:#6c8cff; --card:#1a1f35; --border:#2a3050; --accent2:#ff7ad6 }
 * { box-sizing: border-box }
 html,body { height: 100% }
-body { margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial; color: var(--fg); background-image: radial-gradient(1000px 500px at 20% 0%, #121634 0%, #0f1220 50%, #0b0d18 100%), url('bg.jpg'); background-size: auto, cover; background-position: center; background-attachment: fixed; background-blend-mode: overlay }
+body { margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial; color: var(--fg); background-image: radial-gradient(1000px 500px at 20% 0%, #121634 0%, #0f1220 50%, #0b0d18 100%), linear-gradient(rgba(10,12,24,.55), rgba(10,12,24,.55)), url('bg.svg'); background-size: auto, cover, cover; background-position: center; background-attachment: fixed; background-blend-mode: overlay, multiply, normal }
 .container { max-width: 1100px; margin: 0 auto; padding: 24px }
 .header { display:flex; align-items:center; justify-content:flex-start; margin-bottom:16px }
 .brand { display:inline-flex; align-items:center; gap:10px; font-weight:800; text-decoration:none; color: var(--fg) }
@@ -12,7 +12,7 @@ body { margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Can
 .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px }
 .card { background: linear-gradient(180deg, #19203a, #151a2f); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 28px rgba(0,0,0,.35); transition: transform .2s ease, box-shadow .2s ease; position: relative }
 .card:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,0,0,.45) }
-.thumb { width: 100%; aspect-ratio: 3/4; background: #0c1020; overflow: hidden; border-bottom: 1px solid var(--border) }
+.thumb { width: 100%; aspect-ratio: 3/4; background: #0c1020; overflow: hidden; border-bottom: 1px solid var(--border); position: relative }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block }
 .title { padding: 12px 14px; font-weight: 700; font-size: 16px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical }
 .tags { display: none }
@@ -28,7 +28,8 @@ body { margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Can
 .lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,.6) }
 
 .lock { position: fixed; inset: 0; background: rgba(0,0,0,.75); display: flex; align-items: center; justify-content: center; z-index: 9998 }
+.hidden { display: none !important }
 
-.overlay { position: absolute; inset: 0; background: rgba(10,12,24,.6); opacity: 0; visibility: hidden; transition: opacity .2s ease; display: flex; align-items: center; justify-content: center; padding: 16px }
-.card:hover .overlay { opacity: 1; visibility: visible }
+.overlay { position: absolute; inset: 0; background: rgba(10,12,24,.6); opacity: 0; visibility: hidden; transition: opacity .2s ease; display: flex; align-items: center; justify-content: center; padding: 16px; pointer-events: none }
+.thumb:hover .overlay { opacity: 1; visibility: visible }
 .overlay .tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center }
