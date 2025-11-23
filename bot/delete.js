@@ -15,8 +15,8 @@ const webModelsPath = path.join(webDir, "models.json");
 const imagesDir = path.join(webDir, "images");
 const filesRoot = path.join(webDir, "files");
 
-const token = config.BOT_TOKEN;
-const channelId = config.CHANNEL_ID;
+const token = process.env.BOT_TOKEN || config.BOT_TOKEN;
+const channelId = process.env.CHANNEL_ID || config.CHANNEL_ID;
 const apiBase = `https://api.telegram.org/bot${token}`;
 
 function arg(key) {
@@ -47,7 +47,10 @@ async function main() {
   const name = arg("name");
   if (!id && !name) return;
 
-  const models = readJson(modelsPath, []);
+  let models = readJson(modelsPath, []);
+  if (!Array.isArray(models) || models.length === 0) {
+    models = readJson(webModelsPath, []);
+  }
   let idx = -1;
   for (let i = 0; i < models.length; i++) {
     const m = models[i];
