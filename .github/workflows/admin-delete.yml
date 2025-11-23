@@ -29,10 +29,16 @@ jobs:
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+      - name: Deploy web without commit (Pages artifact)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+      - name: Publish to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
       - name: Commit changes
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add -A
-          git restore --staged web/models.json bot/models.json || true
-          if git diff --cached --quiet; then echo "No changes"; else git commit -m "Admin delete"; git push; fi
+          git add web/models.json
+          if git diff --cached --quiet; then echo "No changes"; else git commit -m "Admin delete: update models.json"; git push; fi

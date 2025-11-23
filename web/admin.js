@@ -55,7 +55,7 @@ function render(list){
     const delBtn=document.createElement('button');
     delBtn.className='btn btn-danger';
     delBtn.textContent='刪除';
-    delBtn.addEventListener('click',()=>dispatchDelete(m));
+    delBtn.addEventListener('click',()=>confirmAndDelete(m));
     actions.appendChild(editBtn);
     actions.appendChild(delBtn);
     card.appendChild(thumb); card.appendChild(title); card.appendChild(tags); card.appendChild(actions);
@@ -122,6 +122,49 @@ async function dispatchEdit(id,name,tags,modal){
     if(res.ok){ if(modal) document.body.removeChild(modal); alert('已送出編輯請求'); }
     else { const txt=await res.text(); alert('編輯請求失敗：'+res.status+'\n'+txt); }
   }catch(e){ alert('網路錯誤：'+e); }
+}
+
+function confirmAndDelete(m){
+  const modal=document.createElement('div');
+  modal.className='lightbox show';
+  const box=document.createElement('div');
+  box.className='card';
+  box.style.maxWidth='520px';
+  box.style.width='90vw';
+  const title=document.createElement('div');
+  title.className='title';
+  title.textContent='確認刪除';
+  const info=document.createElement('div');
+  info.style.padding='0 14px 10px';
+  info.style.color='#c7ccdd';
+  info.textContent=`將刪除：「${m.name}」及其檔案與頻道貼文。`;
+  const tip=document.createElement('div');
+  tip.style.padding='0 14px';
+  tip.style.color='#aab0c0';
+  tip.textContent='為避免誤刪，請輸入上方名稱以確認：';
+  const input=document.createElement('input');
+  input.style.margin='12px';
+  input.placeholder='請輸入完整名稱';
+  const actions=document.createElement('div');
+  actions.className='actions';
+  const ok=document.createElement('button');
+  ok.className='btn btn-danger';
+  ok.textContent='確定刪除';
+  ok.addEventListener('click',async()=>{
+    if(input.value.trim()!==String(m.name).trim()){ alert('名稱不相符，已取消'); return; }
+    ok.disabled=true;
+    await dispatchDelete(m);
+    document.body.removeChild(modal);
+  });
+  const cancel=document.createElement('button');
+  cancel.className='btn btn-secondary';
+  cancel.textContent='取消';
+  cancel.addEventListener('click',()=>{ document.body.removeChild(modal); });
+  actions.appendChild(ok); actions.appendChild(cancel);
+  box.appendChild(title); box.appendChild(info); box.appendChild(tip); box.appendChild(input); box.appendChild(actions);
+  modal.innerHTML=''; modal.appendChild(box);
+  modal.addEventListener('click',(e)=>{ if(e.target===modal) document.body.removeChild(modal); });
+  document.body.appendChild(modal);
 }
 
 async function dispatchSync(){
