@@ -73,19 +73,6 @@ function render(models) {
     card.appendChild(title);
     card.appendChild(actions);
     root.appendChild(card);
-
-    // Validate telegram link; if invalid, remove the card (TG message deleted)
-    try {
-      fetch(m.downloadUrl, { method: "HEAD" }).then((res) => {
-        if (!res.ok) {
-          const el = document.getElementById(`card-${m.id}`);
-          if (el) el.remove();
-        }
-      }).catch(() => {
-        const el = document.getElementById(`card-${m.id}`);
-        if (el) el.remove();
-      });
-    } catch {}
   }
 }
 
