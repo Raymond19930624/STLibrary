@@ -7,18 +7,38 @@ async function loadModels(){
 }
 const pending={ deletes:new Set(), edits:new Map() };
 let selectMode=false;
-function getToken(){ return document.getElementById('token').value.trim(); }
-function getRepo(){ return localStorage.getItem('admin.repo') || document.getElementById('repo').value.trim(); }
+const DEFAULT_REPO="Raymond19930624/STLibrary";
+function getToken(){
+  const el=document.getElementById('token');
+  const mem=sessionStorage.getItem('admin.token') || localStorage.getItem('admin.token') || '';
+  return (el && el.value.trim()) || mem;
+}
+function getRepo(){
+  const el=document.getElementById('repo');
+  const stored=localStorage.getItem('admin.repo');
+  const val=(el && el.value.trim()) || stored || DEFAULT_REPO;
+  return val;
+}
 function persistConfig(){
   const t=document.getElementById('token').value.trim();
   const r=document.getElementById('repo').value.trim();
+  const remember=document.getElementById('remember-token');
+  if(t){
+    try{ sessionStorage.setItem('admin.token', t); }catch{}
+    if(remember && remember.checked){ try{ localStorage.setItem('admin.token', t); }catch{} }
+  }
   if(r) localStorage.setItem('admin.repo', r);
   const cfg=document.getElementById('admin-config');
   if(localStorage.getItem('admin.repo') && cfg) cfg.classList.add('hidden');
 }
 function initConfig(){
   const cfg=document.getElementById('admin-config');
-  const hasR=!!localStorage.getItem('admin.repo');
+  const tokenMem=sessionStorage.getItem('admin.token') || localStorage.getItem('admin.token') || '';
+  const tokenEl=document.getElementById('token');
+  if(tokenEl && tokenMem) tokenEl.value=tokenMem;
+  const repoEl=document.getElementById('repo');
+  if(repoEl && !repoEl.value){ repoEl.value=getRepo(); }
+  const hasR=!!getRepo();
   if(hasR && cfg) cfg.classList.add('hidden');
   const syncFixed=document.getElementById('sync-btn-fixed');
   if(syncFixed){ syncFixed.addEventListener('click', dispatchSync); }
@@ -140,7 +160,7 @@ async function dispatchSync(){
     if(res.ok){ alert('已觸發同步'); }
     else {
       const txt=await res.text();
-      if(res.status===401){ try{ localStorage.removeItem('admin.token'); }catch{} }
+      if(res.status===401){ try{ localStorage.removeItem('admin.token'); sessionStorage.removeItem('admin.token'); }catch{} }
       alert('觸發失敗：'+res.status+'\n'+txt);
     }
   }catch(e){ alert('網路錯誤：'+e); }
@@ -170,7 +190,7 @@ async function confirmDelete(){
   try{
     const res=await fetch(url,{method:'POST',headers:{'Authorization':'Bearer '+pat,'Accept':'application/vnd.github+json','Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'},body:JSON.stringify(body)});
     if(res.ok){ exitDeleteMode(); alert('已送出批次刪除與同步'); }
-    else { const txt=await res.text(); if(res.status===401){ try{ localStorage.removeItem('admin.token'); }catch{} } alert('送出失敗：'+res.status+'\n'+txt); }
+    else { const txt=await res.text(); if(res.status===401){ try{ localStorage.removeItem('admin.token'); sessionStorage.removeItem('admin.token'); }catch{} } alert('送出失敗：'+res.status+'\n'+txt); }
   }catch(e){ alert('網路錯誤：'+e); }
 }
 async function dispatchApply(){
@@ -184,7 +204,7 @@ async function dispatchApply(){
   try{
     const res=await fetch(url,{method:'POST',headers:{'Authorization':'Bearer '+pat,'Accept':'application/vnd.github+json','Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'},body:JSON.stringify(body)});
     if(res.ok){ pending.deletes.clear(); pending.edits.clear(); alert('已送出統一變更與同步'); }
-    else { const txt=await res.text(); if(res.status===401){ try{ localStorage.removeItem('admin.token'); }catch{} } alert('送出失敗：'+res.status+'\n'+txt); }
+    else { const txt=await res.text(); if(res.status===401){ try{ localStorage.removeItem('admin.token'); sessionStorage.removeItem('admin.token'); }catch{} } alert('送出失敗：'+res.status+'\n'+txt); }
   }catch(e){ alert('網路錯誤：'+e); }
   updateActionButtons();
 }
