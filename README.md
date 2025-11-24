@@ -1,4 +1,4 @@
-# 3DP-Base-Library
+# STLibrary
 
 ## Bot 執行
 - 進入 `bot` 資料夾
@@ -12,8 +12,7 @@
   - 讀取頻道新訊息
   - 配對被「回覆」的圖片與壓縮檔
   - 解析 caption 的 `name:`、`tags:`
-  - 更新 `bot/models.json`
-  - 複製到 `web/models.json`
+  - 更新 `web/models.json`
   - 下載圖片到 `web/images/<id>.jpg`
   - 記錄 `LAST_UPDATE_ID` 避免重複
 
@@ -34,11 +33,10 @@ tags: gundam, 1/144
 ## 更新模型流程
 1. 管理者在 Telegram 頻道上傳模型壓縮檔與回覆圖片
 2. 在電腦執行 Bot：`npm start`
-3. Bot 自動更新 `bot/models.json`、複製至 `web/models.json`、並下載圖片
+3. Bot 自動更新 `web/models.json` 並下載圖片
 4. 將整個專案推送到 GitHub（包含 `web`）
 5. GitHub Pages 自動更新顯示
 
 ## 注意事項
-- 若頻道為私有，下載連結將使用 `https://t.me/c/<ID>/<message_id>` 格式
-- 若頻道為公開且有 `username`，下載連結使用 `https://t.me/<username>/<message_id>`
+- 下載連結一律使用 `https://t.me/c/<ID>/<message_id>`（以頻道 ID 為準，對頻道改名具備抗改名能力）
 - 圖片由 Bot 下載保存於 `web/images`，前端依 `id` 對應顯示

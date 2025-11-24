@@ -83,9 +83,7 @@ function normalizeMessage(update) {
 }
 
 function buildDownloadUrl(chat, messageId) {
-  const username = chat && chat.username;
-  if (username) return `https://t.me/${username}/${messageId}`;
-  let cid = String(chat.id);
+  let cid = String(chat && chat.id);
   if (cid.startsWith("-100")) cid = cid.slice(4);
   return `https://t.me/c/${cid}/${messageId}`;
 }
@@ -256,6 +254,13 @@ async function run() {
   writeJson(configPath, newConfig);
 
   for (const m of models) {
+    try {
+      // Normalize downloadUrl to channel id format to be rename-proof
+      const cid = String(channelId).startsWith("-100") ? String(channelId).slice(4) : String(channelId);
+      if (m && m.doc_message_id) {
+        m.downloadUrl = `https://t.me/c/${cid}/${m.doc_message_id}`;
+      }
+    } catch {}
     try {
       const imgPath = path.join(imagesDir, `${m.id}.jpg`);
       if (!fs.existsSync(imgPath) && m.file_id_image) {
