@@ -151,7 +151,6 @@ async function run() {
   let models = readJson(webModelsPath, []);
   for (const pm of photoList) {
     const replied = pm.reply_to_message;
-    if (!replied || !replied.document) continue;
     const baseDoc = resolveBaseDoc(replied, docMap);
     const repliedId = replied && replied.message_id;
     let baseHasDoc = !!(baseDoc && baseDoc.document);
