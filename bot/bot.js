@@ -161,13 +161,14 @@ async function run() {
     if (!id) id = String(baseHasDoc ? baseDoc.message_id : repliedId);
     let exists = baseHasDoc
       ? models.find((m) => m.file_id_doc === baseDoc.document.file_id || m.doc_message_id === baseDoc.message_id)
-      : models.find((m) => m.doc_message_id === repliedId);
+      : models.find((m) => m.doc_message_id === repliedId || m.photo_message_id === repliedId);
     const duplicateIdx = [];
     for (let i = 0; i < models.length; i++) {
       const mm = models[i];
       if (
         mm.file_id_doc === baseDoc.document.file_id ||
         mm.doc_message_id === baseDoc.message_id ||
+        (!baseHasDoc && mm.photo_message_id === repliedId) ||
         mm.id === id
       ) duplicateIdx.push(i);
     }
@@ -267,7 +268,7 @@ async function run() {
     } catch {}
     try {
       const imgPath = path.join(imagesDir, `${m.id}.jpg`);
-      if (!fs.existsSync(imgPath) && m.file_id_image) {
+      if (m.file_id_image) {
         await downloadImage(apiBase, token, m.file_id_image, imgPath);
       }
     } catch {}
