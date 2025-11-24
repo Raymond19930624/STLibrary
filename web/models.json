@@ -1,21 +1,14 @@
 [
   {
     "id": "91",
-    "name": "替身娃娃",
+    "name": "覆蓋測試1",
     "tags": [
-      "寶可夢",
-      "替身",
-      "3D列印",
-      "模型",
-      "公仔",
-      "綠色",
-      "白色",
-      "黑色"
+      "水伊布"
     ],
     "file_id_doc": "BQACAgUAAyEFAAS_451sAANbaSR0AAFxCHG03fhr7RHdIYjMWF6SAAJKGwACaoAgVc2Yg9qfMQ3pNgQ",
-    "file_id_image": "AgACAgUAAyEFAAS_451sAANUaSRelU-TE8A2MPn-XvVB6mtXPTwAAv4MaxtqgCBVFz5ikjue52MBAAMCAAN5AAM2BA",
+    "file_id_image": "AgACAgUAAyEFAAS_451sAANYaSRgwPxUQkBJcxtf4qCcsfaxUlwAAgINaxtqgCBVc6WL8grn1bEBAAMCAAN5AAM2BA",
     "doc_message_id": 91,
-    "photo_message_id": 94,
+    "photo_message_id": 97,
     "downloadUrl": "https://t.me/c/3219365228/91",
     "directUrl": "files/91/替身娃娃.zip"
   },
