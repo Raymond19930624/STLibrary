@@ -151,7 +151,7 @@ async function run() {
   let models = readJson(webModelsPath, []);
   for (const pm of photoList) {
     const replied = pm.reply_to_message;
-    const baseDoc = docMap.get(replied.message_id) || replied;
+    const baseDoc = resolveBaseDoc(replied, docMap);
     const repliedId = replied && replied.message_id;
     let baseHasDoc = !!(baseDoc && baseDoc.document);
 
@@ -299,4 +299,16 @@ if (cfg.RUN_CONTINUOUS || (process.env.RUN_CONTINUOUS && process.env.RUN_CONTINU
   })();
 } else {
   run();
+}
+function resolveBaseDoc(replied, docMap){
+  let cur = replied || null;
+  const visited = new Set();
+  while (cur && !visited.has(cur.message_id)){
+    visited.add(cur.message_id);
+    const mapped = docMap.get(cur.message_id);
+    if (mapped && mapped.document) return mapped;
+    if (cur.document) return cur;
+    cur = cur.reply_to_message || null;
+  }
+  return replied;
 }
