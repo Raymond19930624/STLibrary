@@ -10,7 +10,7 @@ let selectMode=false;
 const DEFAULT_REPO="Raymond19930624/STLibrary";
 function getToken(){
   const el=document.getElementById('token');
-  const mem=sessionStorage.getItem('admin.token') || localStorage.getItem('admin.token') || '';
+  const mem=localStorage.getItem('admin.token') || sessionStorage.getItem('admin.token') || '';
   return (el && el.value.trim()) || mem;
 }
 function getRepo(){
@@ -22,18 +22,14 @@ function getRepo(){
 function persistConfig(){
   const t=document.getElementById('token').value.trim();
   const r=document.getElementById('repo').value.trim();
-  const remember=document.getElementById('remember-token');
-  if(t){
-    try{ sessionStorage.setItem('admin.token', t); }catch{}
-    if(remember && remember.checked){ try{ localStorage.setItem('admin.token', t); }catch{} }
-  }
+  if(t){ try{ localStorage.setItem('admin.token', t); }catch{} try{ sessionStorage.setItem('admin.token', t); }catch{} }
   if(r) localStorage.setItem('admin.repo', r);
   const cfg=document.getElementById('admin-config');
   if(cfg) cfg.classList.remove('hidden');
 }
 function initConfig(){
   const cfg=document.getElementById('admin-config');
-  const tokenMem=sessionStorage.getItem('admin.token') || localStorage.getItem('admin.token') || '';
+  const tokenMem=localStorage.getItem('admin.token') || sessionStorage.getItem('admin.token') || '';
   const tokenEl=document.getElementById('token');
   if(tokenEl && tokenMem) tokenEl.value=tokenMem;
   const repoEl=document.getElementById('repo');
